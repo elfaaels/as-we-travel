@@ -14,6 +14,22 @@ export default function Button(props) {
     if (props.onClick) props.onClick();
   };
 
+  if (props.isDisabled || props.isLoading) {
+    if (props.isDisabled) className.push("disabled");
+    return (
+      <span className={className.join(" ")} style={props.style}>
+        {props.isLoading ? (
+          <>
+            <span className="spinner-border spinner-border-sm mx-5"></span>
+            <span className="sr-only">Loading...</span>
+          </>
+        ) : (
+          props.children
+        )}
+      </span>
+    );
+  }
+
   if (props.type === "link") {
     if (props.isExternal) {
       return (
@@ -28,9 +44,27 @@ export default function Button(props) {
         </a>
       );
     } else {
+      return (
+        <Link
+          to={props.href}
+          className={className.join(" ")}
+          style={props.style}
+          onClick={onClick}
+        >
+          {props.children}
+        </Link>
+      );
     }
   }
-  return <div></div>;
+
+  return (
+    <button
+      to={props.href}
+      className={className.join(" ")}
+      style={props.style}
+      onClick={onClick}
+    ></button>
+  );
 }
 
 Button.propTypes = {
@@ -39,7 +73,6 @@ Button.propTypes = {
   target: propTypes.string,
   className: propTypes.string,
   href: propTypes.string,
-
   isDisabled: propTypes.bool,
   isLoading: propTypes.bool,
   isSmall: propTypes.bool,
